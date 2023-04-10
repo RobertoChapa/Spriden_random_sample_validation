@@ -21,6 +21,12 @@ namespace SpridenRandomSampleValidation
             int setSize = 278; // sample size
             string filePath = @"Y:\Director\CSRS_Banner_Validation\" + fileName + ".dat";
 
+            //Console.WriteLine("Enter the population size:");
+            int populationSize = 200000;//int.Parse(Console.ReadLine());
+
+            //Console.WriteLine("Enter the confidence level (95 or 99):");
+            int confidenceLevel = 95;//int.Parse(Console.ReadLine());
+
             try
             {
                 SpridenFileReader fileReader = new SpridenFileReader(filePath);
