@@ -19,20 +19,23 @@ namespace SpridenRandomSampleValidation
         static void Main(string[] args)
         {
             int setSize = 0; // sample size
-            int confidenceLevel = 0; // if enter is pushed without entering any value 95 will be used
-            string directoryPath = @"Y:\Director\CSRS_Banner_Validation\";
+            int confidenceLevel = 0; // default confidence level
+
+            //string currentDirectory = Directory.GetCurrentDirectory();
+            //FileInfo fileInfo = new FileInfo(currentDirectory);
+            //string directoryFullPath = fileInfo.DirectoryName;
+
+            string directoryFullPath = @"Y:\Director\CSRS_Banner_Validation\";
 
             try
             {
-                // Get all .dat files in the directory
-                string[] filePaths = Directory.GetFiles(directoryPath, "*.dat");
+                string[] filePaths = Directory.GetFiles(directoryFullPath, "*.dat");
 
                 foreach (string filePath in filePaths)
                 {
                     string fileName = Path.GetFileNameWithoutExtension(filePath);
 
-                    // Get confidence level. 95 is default
-                    Console.WriteLine("Enter the Confidence Level 80, 85, 90, 95, 98, 99\r");
+                    Console.WriteLine("Enter the Confidence Level 80, 85, 90, 95, 98, 99");
                     if (int.TryParse(Console.ReadLine(), out confidenceLevel) && (confidenceLevel == 80 || confidenceLevel == 85 || confidenceLevel == 90 || confidenceLevel == 95 || confidenceLevel == 98 || confidenceLevel == 99))
                     {
                         Console.WriteLine("\nYou entered: " + confidenceLevel);
@@ -43,43 +46,37 @@ namespace SpridenRandomSampleValidation
                         confidenceLevel = 95;
                     }
 
-                    // Read dat file and retrieve first field per line
                     SpridenFileReader fileReader = new SpridenFileReader(filePath);
                     List<string> spridenIdList = fileReader.ReadSpridenIds();
 
-                    // Find population size
-                    int populationSize = spridenIdList.Count - 1; // do not count first row. it is the column names
+                    int populationSize = spridenIdList.Count - 1;
 
-                    // Set population size and confidence level
-                    var sampleSizeCalculator = new Spriden_random_sample_validation.SampleSizeCalculator
+                    var sampleSizeCalculator = new SampleSizeCalculator
                     {
                         _confidenceLevel = confidenceLevel,
                         _populationSize = populationSize
                     };
 
-                    // Calculate sample size and output user information to console
                     Console.WriteLine("\nFile Name:");
                     Console.WriteLine(fileName);
                     Console.WriteLine("\nPopulation size: ");
                     Console.WriteLine(populationSize);
                     Console.WriteLine("\nSample size: ");
-                    setSize = sampleSizeCalculator.CalculateSampleSize(); // calc sample size
+                    setSize = sampleSizeCalculator.CalculateSampleSize();
                     Console.WriteLine(setSize);
                     Console.ReadLine();
                     Console.WriteLine("//------//\n");
 
-                    // Calculate the sample from the dat file
                     RandomSampleGenerator generator = new RandomSampleGenerator(spridenIdList, setSize);
                     List<string> randomSample = generator.GetRandomSample();
 
-                    // Write sample output to text files
-                    SampleFileWriter sampleFileWriter = new SampleFileWriter(Path.GetDirectoryName(filePath), fileName);
+                    SampleFileWriter sampleFileWriter = new SampleFileWriter(Path.GetDirectoryName(directoryFullPath), fileName);
                     sampleFileWriter.WriteSampleToFile(randomSample);
                 }
             }
             catch (FileNotFoundException)
             {
-                Console.WriteLine($"The file '{directoryPath}' was not found.");
+                //Console.WriteLine($"The file '{directoryPath}' was not found.");
                 Console.ReadLine();
             }
             catch (Exception ex)
@@ -89,7 +86,6 @@ namespace SpridenRandomSampleValidation
             }
         }
     }
-
 
     // reads the input file and extracts the SPRIDEN IDs
     public class SpridenFileReader
@@ -152,6 +148,7 @@ namespace SpridenRandomSampleValidation
             return randomSample;
         }
 
+        // find unique random numbers
         private static HashSet<int> GenerateUniqueRandomNumbers(int setSize, int min, int max)
         {
             HashSet<int> uniqueNumbers = new HashSet<int>();
