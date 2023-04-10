@@ -18,17 +18,19 @@ namespace SpridenRandomSampleValidation
     {
         static void Main(string[] args)
         {
-            string fileName = "";//"SPRIDEN_edited";
+            string fileName = "";// name of the file to be examined. Do not include the extension
             int setSize = 0; // sample size
-            int confidenceLevel = 0;
+            int confidenceLevel = 0; // if enter is pushed without entering any value 95 will be used
             string filePath = "";
 
             try
             {
+                // get file name
                 Console.WriteLine("Enter file name minus extension:");
                 fileName = Console.ReadLine();
                 filePath = @"Y:\Director\CSRS_Banner_Validation\" + fileName + ".dat";
 
+                // get confidence level. 95 is default
                 Console.WriteLine("Enter the Confidence Level 80, 85, 90, 95, 98, 99\r");
                 if (int.TryParse(Console.ReadLine(), out confidenceLevel) && (confidenceLevel == 80 || confidenceLevel == 85 || confidenceLevel == 90 || confidenceLevel == 95 || confidenceLevel == 98 || confidenceLevel == 99))
                 {
