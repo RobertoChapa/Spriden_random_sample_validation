@@ -34,6 +34,7 @@ namespace Spriden_random_sample_validation
             else
             {
                 Console.WriteLine("Invalid confidence level. Use 80,85,90,95,98 or 99.");
+
                 return -1;
             }
 
@@ -41,6 +42,7 @@ namespace Spriden_random_sample_validation
             double marginOfError = 0.05;
 
             int sampleSize = ComputeSampleSize(_populationSize, zScore, estimatedProportion, marginOfError);
+
             return sampleSize;
         }
 
